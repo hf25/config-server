@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </Console>
+        <!-- 按日期每天生成log文件 -->
+        <RollingFile name="infoLog" fileName="logs/wms-info.log" append="true"
+                     filePattern="logs/wms-info-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs" maxDepth="2">
+                    <IfFileName glob="wms-info*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+
+            <Filters>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+        <RollingFile name="errorLog" fileName="logs/wms-error.log" append="true"
+                     filePattern="logs/wms-error-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%d %p %C{1.} [%t] %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs" maxDepth="2">
+                    <IfFileName glob="wms-error*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="infoLog" />
+            <AppenderRef ref="errorLog" />
+        </Root>
+    </Loggers>
+</Configuration>

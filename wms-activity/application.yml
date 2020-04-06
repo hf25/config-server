@@ -1,0 +1,44 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: wms-activity
+  http:
+    converters:
+      preferred-json-mapper: gson
+  gson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialize-nulls: true
+    long-serialization-policy: string
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+  main.allow-bean-definition-overriding: true
+server:
+  port: 3011
+management.endpoints.web.exposure.include: shutdown,health,info
+management.endpoint.shutdown.enabled: true
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000 #超时时间
+ribbon: #ribbon容错策略
+  ConnectTimeout: 1000
+  ReadTimeout: 5000
+  OkToRetryOnAllOperations: true
+  MaxAutoRetriesNextServer: 0
+  MaxAutoRetries: 0
+logging:
+  level:
+    root: INFO
+  config: classpath:log4j2-spring.xml
+feign:
+  hystrix:
+    enabled: true
+mybatis-plus:
+  mapper-locations: classpath:/com/base/mapper/xml/*Mapper.xml
+  typeAliasesPackage: com.base.entity
+  global-config:
+    db-config:
+      id-type: id_worker_str
+  configuration:
+    map-underscore-to-camel-case: false
+    cache-enabled: false
