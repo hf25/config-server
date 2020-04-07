@@ -1,26 +1,54 @@
 spring:
   datasource:
-    url: jdbc:mysql://rm-2evs6k3612k4fxv68.mysql.rds.aliyuncs.com:3306/wms-activity?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://47.75.90.35:3306/ezeeship-message-center?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: Ezeeship1108
+    password: ezeeship1108
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
-      maximum-pool-size: 20
-security:
-  oauth2:
-    client:
-      clientId: ${spring.application.name}
-      clientSecret: 123456
-      accessTokenUri: http://192.168.0.75:5500/oauth/token
-      grant-type: client_credentials
-      scope: server
-    resource:
-      jwt:
-        key-value: 123456
+      maximum-pool-size: 30
+  rabbitmq:
+          host: docker
+          port: 5672
+          username: yule
+          password: ezeeship001
+          publisher-confirms: true
+          publisher-returns: true
+          template:
+              mandatory: true
+          listener:
+              simple:
+                  concurrency: 2  #最小消息监听线程数
+                  max-concurrency: 50 #最大消息监听线程数
+  redis:
+          database: 0
+  # server host1
+          host: docker
+  # server password
+  #        password:
+  #connection port
+          port: 6379
+  # pool settings ...
+          lettuce:
+            pool:
+              min-idle: 0
+              max-active: 200
+              max-idle: 200
+  mail:
+      properties:
+        mail.smtp.connectiontimeout: 5000
+        mail.smtp.timeout: 3000
+        mail.smtp.writetimeout: 5000
+        mail.smtp.auth: true
+        mail.smtp.ssl.enable: true
+        # mail.smtp.port: 465
+      host: smtp.gmail.com
+      username: support@ezeeship.com
+      password: ezlp$2000
+      port: 465
 eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    serviceUrl:
-      defaultZone: http://192.168.0.75:1111/eureka/
-    fetch-registry: true
+    instance:
+            preferIpAddress: true
+            instance-id: ${eureka.instance.preferIpAddress}:${spring.application.name}:${server.port}
+    client:
+        serviceUrl:
+            defaultZone: http://docker:1111/eureka/
